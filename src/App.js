@@ -1,39 +1,38 @@
-import Button from "./Button";
-import styles from "./App.module.css";
 import { useState, useEffect } from "react";
 
-function App() {
-  const [counter, setValue] = useState(0);
-  const [keyword, setKeyword] = useState("");
-  const onClick = () => setValue((prev) => prev + 1);
-  const onChange = (event) => setKeyword(event.target.value);
-  console.log("i run all the time");
+function Hello() {
+  // clean-up에 대한 내용. 아래 1, 2, 3 결과적으론 다 같은 역할인데 어떻게 작성하냐 차이
+  // 1
+  function byeFn() {
+    console.log("bye :(");
+  }
+  function hiFn() {
+    console.log("created :)");
+    return byeFn;
+  }
+  useEffect(hiFn, []);
+  // 2
   useEffect(() => {
-    // 코드가 딱 1회만 실행한다.
-    console.log("CALL THE API....");
+    console.log("hi :)");
+    return () => console.log("bye :(");
   }, []);
-  useEffect(() => {
-    // keyword가 변화할 때만 코드를 실행한다.
-    if (keyword !== "" && keyword.length > 5) {
-      console.log("SEARCH FOR", keyword);
-    }
-  }, [keyword]);
-  useEffect(() => {
-    console.log("I run when 'counter' changes.");
-  }, [counter]);
-  useEffect(() => {
-    console.log("I run when 'keyword' & 'counter' changes.");
-  }, [keyword, counter]);
+  // 3
+  useEffect(function () {
+    console.log("hi :)");
+    return function () {
+      console.log("bye :(");
+    };
+  }, []);
+  return <h1>Hello</h1>;
+}
+
+function App() {
+  const [showing, setShowing] = useState(false);
+  const onClick = () => setShowing((prev) => !prev);
   return (
     <div>
-      <input
-        value={keyword}
-        onChange={onChange}
-        type="text"
-        placeholder="Search here..."
-      />
-      <h1>{counter}</h1>
-      <button onClick={onClick}>click me</button>
+      {showing ? <Hello /> : null}
+      <button onClick={onClick}>{showing ? "Hide" : "Show"}</button>
     </div>
   );
 }
