@@ -1,40 +1,30 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 
-function Hello() {
-  // clean-up에 대한 내용. 아래 1, 2, 3 결과적으론 다 같은 역할인데 어떻게 작성하냐 차이
-  // 1
-  function byeFn() {
-    console.log("bye :(");
-  }
-  function hiFn() {
-    console.log("created :)");
-    return byeFn;
-  }
-  useEffect(hiFn, []);
-  // 2
-  useEffect(() => {
-    console.log("hi :)");
-    return () => console.log("bye :(");
-  }, []);
-  // 3
-  useEffect(function () {
-    console.log("hi :)");
-    return function () {
-      console.log("bye :(");
-    };
-  }, []);
-  return <h1>Hello</h1>;
-}
+function Self() {
+  const [cnt, setCnt] = useState(0);
+  const [text, setText] = useState("");
+  const [btnNm, setBtnNm] = useState("클릭");
 
-function App() {
-  const [showing, setShowing] = useState(false);
-  const onClick = () => setShowing((prev) => !prev);
+  const onClick = () => setCnt((cur) => cur + 1);
+  const onClick2 = () => {
+    setCnt(() => 0);
+    setBtnNm("클릭");
+    setText("");
+  };
+  const onClick3 = () => setBtnNm(text);
+  const onChange = (event) => setText(event.target.value);
+
   return (
     <div>
-      {showing ? <Hello /> : null}
-      <button onClick={onClick}>{showing ? "Hide" : "Show"}</button>
+      <h1>클릭횟수 : {cnt}</h1>
+      <input onChange={onChange} value={text} type="text" />
+      <button onClick={onClick3}>버튼명변경</button>
+      <div>
+        <button onClick={onClick}>{btnNm}</button>
+        <button onClick={onClick2}>초기화</button>
+      </div>
     </div>
   );
 }
 
-export default App;
+export default Self;
