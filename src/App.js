@@ -1,30 +1,37 @@
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect } from "react";
 
-function Self() {
-  const [cnt, setCnt] = useState(0);
-  const [text, setText] = useState("");
-  const [btnNm, setBtnNm] = useState("클릭");
-
-  const onClick = () => setCnt((cur) => cur + 1);
-  const onClick2 = () => {
-    setCnt(() => 0);
-    setBtnNm("클릭");
-    setText("");
+function App() {
+  const [toDo, setToDo] = useState("");
+  const [toDos, setToDos] = useState([]);
+  const onChange = (event) => setToDo(event.target.value);
+  const onSubmit = (event) => {
+    event.preventDefault();
+    if (toDo === "") {
+      return;
+    }
+    setToDos((currentArray) => [toDo, ...currentArray]);
+    setToDo("");
   };
-  const onClick3 = () => setBtnNm(text);
-  const onChange = (event) => setText(event.target.value);
-
   return (
     <div>
-      <h1>클릭횟수 : {cnt}</h1>
-      <input onChange={onChange} value={text} type="text" />
-      <button onClick={onClick3}>버튼명변경</button>
-      <div>
-        <button onClick={onClick}>{btnNm}</button>
-        <button onClick={onClick2}>초기화</button>
-      </div>
+      <h1>My To Dos ({toDos.length})</h1>
+      <form onSubmit={onSubmit}>
+        <input
+          onChange={onChange}
+          value={toDo}
+          type="text"
+          placeholder="Write your to do..."
+        />
+        <button>Add To Do</button>
+      </form>
+      <hr />
+      <ul>
+        {toDos.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
     </div>
   );
 }
 
-export default Self;
+export default App;
