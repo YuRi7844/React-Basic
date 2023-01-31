@@ -1,50 +1,22 @@
-import { useState, useEffect } from "react";
+import Home from "./routes/Home";
+import Detail from "./routes/Detail";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
+/* Router
+ * 페이지를 새로고침 하지않고 필요한 화면을 렌더링하여 가져올 수 있다.
+ * 버전 6부터는 Switch가 아닌 Routes를 사용한다.
+ * Router > Routes > Route복수 를 사용하여 경로에 따라 하나의 페이지만 보여준다.
+ */
 function App() {
-  const [loading, setLoading] = useState(true);
-  const [coins, setCoins] = useState([]); // 여기서 useState 초기값 세팅을 안하면 coins.length가 undefined로 나올수 있겠지
-  const [principal, setPrincipal] = useState(0);
-  const [exc, setExc] = useState("");
-  const onChange = (event) => {
-    setPrincipal(event.target.value);
-  };
-  const fnOptionChanged = (event) => {
-    console.log(event.target.value);
-    setExc(principal * event.target.value);
-  };
-  useEffect(() => {
-    fetch("https://api.coinpaprika.com/v1/tickers")
-      .then((response) => response.json())
-      .then((json) => {
-        setCoins(json);
-        setLoading(false);
-      });
-  }, []);
   return (
-    <div>
-      <div>
-        <h1>The Coins! ({coins.length})</h1>
-        {loading ? (
-          <strong>Loading...</strong>
-        ) : (
-          <select onChange={fnOptionChanged}>
-            {coins.map((coin) => (
-              <option key={coin.id} value={coin.quotes.USD.price}>
-                {coin.name} ({coin.symbol}): {coin.quotes.USD.price} USD
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
-      <div>
-        <input
-          onChange={onChange}
-          value={principal}
-          placeholder="환전할 금액($)을 입력하세요.."
-        />
-      </div>
-      <h3>환전 예상결과: {exc}</h3>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/movie/:id" element={<Detail />} />
+        {/* 파라미터를 붙여줄때는 파라미터 앞에 : 꼭 써야함 */}
+        {/* <Route path="/" element={<Home />} /> */}
+        <Route path={`${process.env.PUBLIC_URL}/`} element={<Home />} />
+      </Routes>
+    </Router>
   );
 }
 
